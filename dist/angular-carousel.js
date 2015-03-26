@@ -207,6 +207,7 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
 
             var requestAnimationFrame = $window.requestAnimationFrame || $window.webkitRequestAnimationFrame || $window.mozRequestAnimationFrame;
 
+
             function getItemIndex(collection, target, defaultIndex) {
                 var result = defaultIndex;
                 collection.every(function(item, index) {
@@ -438,6 +439,7 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
 
                         var init = true;
                         scope.carouselIndex = 0;
+                        scope.carouselAutoSlide = 3;
 
                         if (!isRepeatBased) {
                             // fake array when no ng-repeat
@@ -459,6 +461,13 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
 
                         if (iAttributes.rnCarouselAutoSlide!==undefined) {
                             var duration = parseInt(iAttributes.rnCarouselAutoSlide, 10) || options.autoSlideDuration;
+                            var autoSlideModel = $parse(iAttributes.rnCarouselAutoSlide);
+                            
+                            if (angular.isFunction(autoSlideModel.assign)) {
+                                scope.$parent.$watch(autoSlideModel, function(newValue) {
+                                    duration = newValue;
+                                });
+                            }
                             scope.autoSlide = function() {
                                 if (scope.autoSlider) {
                                     $interval.cancel(scope.autoSlider);
